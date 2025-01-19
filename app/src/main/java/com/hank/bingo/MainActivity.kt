@@ -1,16 +1,37 @@
 package com.hank.bingo
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.AuthUI.IdpConfig.EmailBuilder
+import com.firebase.ui.auth.AuthUI.IdpConfig.GoogleBuilder
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.hank.bingo.databinding.ActivityMainBinding
+import java.util.Arrays
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
+    private val TAG: String? = MainActivity::class.java.simpleName
+    private val requestAuth = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == RESULT_OK) {
+        }
+    }
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,8 +53,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.action_signout->{
+        when (item.itemId) {
+            R.id.action_signout -> {
+                FirebaseAuth.getInstance().signOut()
                 true
             }
         }
@@ -41,15 +63,46 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onStart() {
+        FirebaseAuth.getInstance().addAuthStateListener(this)
         super.onStart()
     }
 
     override fun onStop() {
+        FirebaseAuth.getInstance().removeAuthStateListener(this)
         super.onStop()
     }
 
     fun setFab(view: View) {
         finish()
+    }
+
+    override fun onAuthStateChanged(auth: FirebaseAuth) {
+        auth.currentUser?.also {
+            Log.d(TAG, "auth-uid- ${it.uid}")
+            it.displayName?.run {
+                FirebaseDatabase.getInstance().getReference("users")
+                    .child(it.uid)
+                    .child("displayName")
+                    .setValue(this)
+                    .addOnCompleteListener {
+                        Log.d(
+                            TAG, "auth-comp- ${auth.currentUser!!.displayName}"
+                        )
+                    }
+            }
+        } ?: signUp()
+
+    }
+//
+    private fun signUp() {
+        Log.d(TAG, "auth-signUp- ")
+        val signIn = AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(
+            Arrays.asList(
+                EmailBuilder().build(),
+                GoogleBuilder().build(),
+            )
+        ).setIsSmartLockEnabled(false).build()
+        requestAuth.launch(signIn)
     }
 
 }
