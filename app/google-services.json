@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "812804821470",
+    "firebase_url": "https://bingo2024-a097a-default-rtdb.firebaseio.com",
+    "project_id": "bingo2024-a097a",
+    "storage_bucket": "bingo2024-a097a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:812804821470:android:a3a5e50253be35ecc6cd4f",
+        "android_client_info": {
+          "package_name": "com.hank.bingo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "812804821470-19tuft0vrfove0rjkkbe3vgcgmodm3kf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWA68V2fWzXq27ORGrXNwcu4j3E91lfZQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "812804821470-19tuft0vrfove0rjkkbe3vgcgmodm3kf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

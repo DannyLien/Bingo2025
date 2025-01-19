@@ -22,10 +22,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.hank.bingo" />
+                  <option name="mobileSdkAppId" value="1:812804821470:android:a3a5e50253be35ecc6cd4f" />
+                  <option name="projectId" value="bingo2024-a097a" />
+                  <option name="projectNumber" value="812804821470" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
