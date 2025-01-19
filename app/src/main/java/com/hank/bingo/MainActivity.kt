@@ -90,10 +90,42 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener {
                         )
                     }
             }
+//
+            FirebaseDatabase.getInstance().getReference("users")
+                .child(it.uid)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val member = snapshot.getValue(Member::class.java)
+                        member?.nickname?.also { nick ->
+                            binding.tvNickname.setText(nick)
+                            Log.d(TAG, "auth-nick- ${nick}")
+                        } ?: showNickDialog(it)
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                    }
+                })
         } ?: signUp()
 
     }
-//
+
+    private fun showNickDialog(user: FirebaseUser) {
+        val editText = EditText(this)
+        editText.setText("${user.displayName}-")
+        AlertDialog.Builder(this)
+            .setTitle("Nick Name")
+            .setMessage("Enter Nick Name")
+            .setView(editText)
+            .setPositiveButton("OK") { nick, which ->
+                FirebaseDatabase.getInstance().getReference("users")
+                    .child(user.uid)
+                    .child("nickname")
+                    .setValue("${editText.text}")
+                Log.d(TAG, "auth-dialog- ${editText.text}")
+            }.show()
+    }
+
+    //
     private fun signUp() {
         Log.d(TAG, "auth-signUp- ")
         val signIn = AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(
