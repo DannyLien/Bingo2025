@@ -27,6 +27,7 @@ import com.hank.bingo.databinding.ActivityMainBinding
 import java.util.Arrays
 
 class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, View.OnClickListener {
+    var member: Member? = null
     val avatarIds = intArrayOf(
         R.drawable.avatar_0,
         R.drawable.avatar_1,
@@ -108,7 +109,18 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, View.O
     }
 
     fun setFab(view: View) {
-        finish()
+        val roomText = EditText(this)
+        roomText.setText("Welcome")
+        AlertDialog.Builder(this)
+            .setTitle("Game Room")
+            .setMessage("Room Title?")
+            .setView(roomText)
+            .setPositiveButton("OK") { dialog, which ->
+                val room = GameRoom(roomText.text.toString(), member)
+                FirebaseDatabase.getInstance().getReference("rooms")
+                    .push().setValue(room)
+
+            }.show()
     }
 
     override fun onAuthStateChanged(auth: FirebaseAuth) {
@@ -131,7 +143,7 @@ class MainActivity : AppCompatActivity(), FirebaseAuth.AuthStateListener, View.O
                 .child(it.uid)
                 .addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        val member = snapshot.getValue(Member::class.java)
+                        member = snapshot.getValue(Member::class.java)
                         member?.nickname?.also { nick ->
                             binding.tvNickname.setText(nick)
                             Log.d(TAG, "auth-nick- ${nick}")
